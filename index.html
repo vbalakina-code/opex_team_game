@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Колесо Откровений от Dodo Pizza 🍕 v3.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           1. СБРОС СТИЛЕЙ И УЛУЧШЕННАЯ ОСНОВА
+           ========================================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #fffaf2 0%, #fcf6eb 100%); 
+            font-family: 'Nunito', sans-serif;
+            color: #2C1D1D; /* Глубокий кофейный цвет */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: min-content;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#FF6900 1.5px, transparent 1.5px), radial-gradient(#FF6900 1.5px, #fcf6eb 1.5px);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 650px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: #FF6900; /* Фирменный оранжевый Dodo */
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-shadow: 2px 2px 0px rgba(44, 29, 29, 0.05);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #6E5E5C;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        /* ==========================================================================
+           2. ИГРОВОЙ ЭКРАН
+           ========================================================================== */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 300px 440px 1fr;
+            gap: 30px;
+            max-width: 1300px;
+            width: 100%;
+            margin-bottom: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 1150px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+        }
+
+        .players-panel, .control-panel {
+            background-color: #FFFFFF;
+            border: 3px solid #2C1D1D;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 
+                6px 6px 0px #2C1D1D,
+                -2px -2px 10px rgba(255, 255, 255, 0.8) inset,
+                2px 2px 10px rgba(44, 29, 29, 0.05) inset;
+            width: 100%;
+        }
+
+        .players-panel h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            color: #FF6900;
+            letter-spacing: 0.5px;
+        }
+
+        .player-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .player-input-group input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #2C1D1D;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 14px;
+            outline: none;
+            background-color: #FFFDF9;
+        }
+
+        .player-input-group input:focus {
+            border-color: #FF6900;
+            background-color: #FFFFFF;
+        }
+
+        .add-player-btn {
+            background-color: #FF6900;
+            color: white;
+            border: 2px solid #2C1D1D;
+            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.1s;
+            box-shadow: 0 3px 0 #2C1D1D;
+        }
+
+        .add-player-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #2C1D1D;
+        }
+
+        .players-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .players-list::-webkit-scrollbar { width: 6px; }
+        .players-list::-webkit-scrollbar-track { background: #FFF9F3; border-radius: 10px; }
+        .players-list::-webkit-scrollbar-thumb { background: #E6DFD5; border-radius: 10px; }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #FFFDF9;
+            border: 2px solid #6E5E5C;
+            border-radius: 12px;
+            padding: 10px 15px;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .player-item.active-turn {
+            background-color: #FFEAD6;
+            border-color: #FF6900;
+            box-shadow: 0 4px 15px rgba(255, 105, 0, 0.2);
+            transform: scale(1.03);
+        }
+
+        .player-name { display: flex; align-items: center; gap: 8px; }
+        .player-item.active-turn .player-name::before { content: '👑'; animation: pulse-crown 1s infinite alternate; }
+
+        @keyframes pulse-crown {
+            from { transform: scale(1) rotate(-10deg); }
+            to { transform: scale(1.2) rotate(10deg); }
+        }
+
+        .remove-player-btn {
+            background: none;
+            border: none;
+            color: #C42828;
+            cursor: pointer;
+            font-size: 15px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .remove-player-btn:hover { opacity: 1; }
+
+        /* Панель Колеса */
+        .wheel-panel {
+            position: relative;
+            width: 440px;
+            height: 440px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: drop-shadow(0 15px 30px rgba(44, 29, 29, 0.15));
+        }
+
+        .pizza-pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pizza-pointer .arrow {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 30px solid #FF6900;
+            filter: drop-shadow(0px 4px 4px rgba(44, 29, 29, 0.3));
+        }
+
+        .pizza-pointer .handle {
+            width: 10px;
+            height: 15px;
+            background-color: #2C1D1D;
+            margin-top: -3px;
+            border-radius: 3px;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 8px solid #2C1D1D;
+            background-color: #FFF2AA;
+            will-change: transform;
+        }
+
+        /* Правая карточка управления */
+        .control-panel {
+            border-radius: 28px;
+            padding: 35px;
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 8px 8px 0px #2C1D1D;
+            position: relative;
+            animation: fadeInRight 0.8s ease-out;
+        }
+        
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .sound-toggle-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #FFFDF9;
+            border: 2px solid #6E5E5C;
+            font-size: 18px;
+            color: #6E5E5C;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 0 #6E5E5C;
+        }
+
+        .sound-toggle-btn:hover {
+            color: #FF6900;
+            border-color: #FF6900;
+            background-color: #FFEAD6;
+            box-shadow: 0 3px 0 #FF6900;
+        }
+
+        .sound-toggle-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #FF6900; }
+
+        .question-card-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+            padding: 15px 0;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .turn-indicator {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #6E5E5C;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .category-tag {
+            align-self: center;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border: 2px solid #2C1D1D;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        /* Стили тегов для 6 категорий */
+        .tag-shame { background-color: #FFEAD6; color: #E05C00; }
+        .tag-if { background-color: #E2F0D9; color: #2D522D; }
+        .tag-work { background-color: #E2F0FD; color: #193E61; }
+        .tag-dilemma { background-color: #FCE4EC; color: #C2185B; }
+        .tag-secret { background-color: #E8F5E9; color: #1B5E20; }
+        .tag-future { background-color: #EDE7F6; color: #5E35B1; }
+
+        .active-question {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2C1D1D;
+            line-height: 1.5;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .player-highlight {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.7rem;
+            color: #FF6900;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .dodo-btn {
+            background-color: #FF6900;
+            color: #FFFFFF;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 15px;
+            padding: 16px 35px;
+            border-radius: 50px;
+            border: 3px solid #2C1D1D;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #2C1D1D;
+            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 100%;
+            text-align: center;
+        }
+
+        .dodo-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 0 #2C1D1D;
+            background-color: #FF8C00;
+        }
+
+        .dodo-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #2C1D1D; }
+
+        .dodo-btn:disabled {
+            background-color: #E6DFD5;
+            color: #A39391;
+            cursor: not-allowed;
+            box-shadow: none;
+            border-color: #A39391;
+            transform: none !important;
+        }
+
+        .btn-secondary { background-color: #FFFFFF; color: #2C1D1D; }
+        .btn-secondary:hover:not(:disabled) { color: #FF6900; }
+
+        .btn-finish {
+            background-color: #FFFDF9;
+            color: #C42828;
+            border-color: #6E5E5C !important;
+            margin-top: 20px;
+            font-size: 13px !important;
+            padding: 10px 18px !important;
+            box-shadow: 0 3px 0 #6E5E5C;
+        }
+
+        .btn-finish:hover:not(:disabled) {
+            background-color: #FFF0F0;
+            box-shadow: 0 5px 0 #2C1D1D !important;
+        }
+
+        .btn-veto { background-color: #FFF9F9; color: #C42828; border-color: #2C1D1D !important; }
+
+        .rules-bar {
+            background-color: #FFEAD6;
+            border: 2px dashed #FF6900;
+            border-radius: 20px;
+            padding: 18px 30px;
+            max-width: 1300px;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .rule-item {
+            font-size: 14px;
+            color: #5C4A48;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rule-item i { color: #FF6900; font-size: 17px; }
+
+        footer {
+            margin-top: 35px;
+            font-size: 13px;
+            color: #A39391;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .sing-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 29, 29, 0.9);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(0px);
+        }
+
+        .sing-modal-overlay.active { opacity: 1; pointer-events: auto; backdrop-filter: blur(5px); }
+
+        .sing-modal-card {
+            background-color: #FFFDF9;
+            border: 4px solid #2C1D1D;
+            border-radius: 32px;
+            padding: 45px;
+            text-align: center;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 10px 10px 0px #2C1D1D, 0 15px 40px rgba(0,0,0,0.2);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .sing-modal-overlay.active .sing-modal-card { transform: scale(1) translateY(0); }
+        .sing-modal-card h2 { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; color: #FF6900; margin-bottom: 18px; text-transform: uppercase; }
+
+        .dancing-dodo { animation: dodo-dance 0.8s infinite ease-in-out alternate; transform-origin: bottom center; }
+        .dodo-wing { animation: dodo-wing-flap 0.4s infinite ease-in-out alternate; transform-origin: 32px 55px; }
+
+        @keyframes dodo-dance {
+            0% { transform: translateY(0) rotate(-4deg) scaleY(1); }
+            100% { transform: translateY(-15px) rotate(4deg) scaleY(0.95); }
+        }
+        @keyframes dodo-wing-flap {
+            0% { transform: rotate(15deg); }
+            100% { transform: rotate(-35deg); }
+        }
+        @keyframes bounce-mic {
+            from { transform: translateY(0) rotate(-5deg); }
+            to { transform: translateY(-12px) rotate(5deg); }
+        }
+        
+        .finish-player-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #FFFFFF;
+            border: 2px solid #2C1D1D;
+            border-radius: 25px;
+            padding: 6px 15px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 3px 3px 0px #2C1D1D;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fa-solid fa-pizza-slice"></i> Колесо Откровений</h1>
+        <p class="subtitle">Интерактивный тимбилдинг со вкусом честности v3.0</p>
+    </header>
+
+    <div class="game-layout">
+        <div class="players-panel">
+            <h3><i class="fa-solid fa-users"></i> Наша команда</h3>
+            <div class="player-input-group">
+                <input type="text" id="playerNameInput" placeholder="Имя коллеги..." onkeypress="handleKeyPress(event)">
+                <button class="add-player-btn" onclick="addNewPlayer()"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <ul id="playersList" class="players-list"></ul>
+            <button class="dodo-btn btn-finish" onclick="finishGame()">🏁 Завершить игру</button>
+        </div>
+
+        <div class="wheel-panel">
+            <div class="pizza-pointer">
+                <div class="arrow"></div>
+                <div class="handle"></div>
+            </div>
+            <canvas id="wheelCanvas" width="440" height="440"></canvas>
+        </div>
+
+        <div class="control-panel">
+            <button id="soundToggle" class="sound-toggle-btn" onclick="toggleMute()">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+
+            <div id="questionCardWrapper" class="question-card-wrapper">
+                <div id="turnIndicator" class="turn-indicator">Кто крутит?</div>
+                <div id="categoryLabel" class="category-tag tag-shame" style="display: none;">Категория</div>
+                <div id="questionText" class="active-question">
+                    Добавьте коллег и нажмите «Крутить пиццу», чтобы запустить игру с 6 уникальными категориями!
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button id="spinBtn" class="dodo-btn" onclick="spinDodoWheel()">Крутить пиццу!</button>
+                <button id="vetoBtn" class="dodo-btn btn-secondary btn-veto" onclick="useVeto()" style="display: none;">🤐 Право вето</button>
+                <button id="nextBtn" class="dodo-btn btn-secondary" onclick="nextRound()" style="display: none;">Следующий игрок</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="rules-bar">
+        <div class="rule-item"><i class="fa-solid fa-users"></i> Крутите по очереди</div>
+        <div class="rule-item"><i class="fa-solid fa-rotate"></i> 6 уникальных секторов без повторов</div>
+        <div class="rule-item"><i class="fa-solid fa-shield-heart"></i> 3 Вето = штрафной Фант (спеть песню!)</div>
+    </div>
+
+    <footer>Dodo Brands © 2026 • Игры, которые объединяют</footer>
+
+    <div id="singModal" class="sing-modal-overlay">
+        <div class="sing-modal-card">
+            <div style="font-size: 5rem; margin-bottom: 25px; animation: bounce-mic 1s infinite alternate;">🎤🎶</div>
+            <h2>Штрафной Фант!</h2>
+            <p style="font-size: 1.3rem; font-weight: 700; margin-bottom: 30px; line-height: 1.5;">
+                Коллега <span id="singPlayerName" style="color: #FF6900; font-size: 1.6rem; font-family: Montserrat;">Игрок</span> набрал 3 пропуска! Пора <span style="text-decoration: underline; color: #FF6900;">СПЕТЬ КУПЛЕТ ЛЮБИМОЙ ПЕСНИ</span> перед всей командой! 🎤
+            </p>
+            <button class="dodo-btn" onclick="closeSingModal()">Я спел! Сбросить счетчик</button>
+        </div>
+    </div>
+
+    <div id="finishModal" class="sing-modal-overlay">
+        <div class="sing-modal-card" style="max-width: 630px; padding: 50px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 25px;">
+                <svg class="dancing-dodo" width="170" height="170" viewBox="0 0 100 100">
+                    <ellipse cx="42" cy="85" rx="7" ry="3.5" fill="#FF8C00" stroke="#2C1D1D" stroke-width="2"/>
+                    <ellipse cx="58" cy="85" rx="7" ry="3.5" fill="#FF8C00" stroke="#2C1D1D" stroke-width="2"/>
+                    <line x1="42" y1="72" x2="42" y2="83" stroke="#2C1D1D" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="58" y1="72" x2="58" y2="83" stroke="#2C1D1D" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="50" cy="50" r="26" fill="#FF6900" stroke="#2C1D1D" stroke-width="3"/>
+                    <circle cx="50" cy="57" r="16" fill="#FFF" opacity="0.9"/>
+                    <path class="dodo-wing" d="M 32 50 C 20 45, 18 60, 32 62 Z" fill="#FF8C00" stroke="#2C1D1D" stroke-width="2"/>
+                    <path d="M 45 42 Q 49 38 53 42" fill="none" stroke="#2C1D1D" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 61 42 Q 65 38 69 42" fill="none" stroke="#2C1D1D" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 64 45 C 80 45, 82 60, 68 60 C 62 60, 58 51, 64 45 Z" fill="#FFD700" stroke="#2C1D1D" stroke-width="3"/>
+                    <path d="M 43 24 C 43 16, 57 16, 57 24 Z" fill="#FFF" stroke="#2C1D1D" stroke-width="2.5"/>
+                    <rect x="45" y="21" width="10" height="4" fill="#FFF" stroke="#2C1D1D" stroke-width="2"/>
+                </svg>
+            </div>
+            <h2>Игра завершена! 🎉</h2>
+            <p style="font-size: 1.45rem; font-weight: 800; margin-bottom: 25px; color: #2C1D1D;">
+                Спасибо за честные ответы! <br><span style="color: #FF6900; font-family: Montserrat;">А ТЕПЕРЬ ЗА РАБОТУ! 🍕💼</span>
+            </p>
+            <div style="background-color: #FFF9F3; border: 2px dashed #FF6900; border-radius: 16px; padding: 20px; margin-bottom: 30px; text-align: left;">
+                <strong style="color: #6E5E5C; display: block; margin-bottom: 12px; font-size: 14px; text-transform: uppercase;"><i class="fa-solid fa-users"></i> Наш состав сегодня:</strong>
+                <div id="finishPlayersContainer" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+            </div>
+            <button class="dodo-btn" onclick="closeFinishModal()">Вернуться в игру ↩️</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================================================
+        // БАЗА ДАННЫХ ВОПРОСОВ: 6 КАТЕГОРИЙ СТРОГО ПО 10 ВОПРОСОВ В КАЖДОЙ
+        // ==========================================================================
+        const dodoDatabase = {
+            shame: [
+                "Вы когда-нибудь отправляли в рабочий чат сообщение, предназначенное другу/супругу? Что там было?",
+                "Было ли такое, что вы полчаса спорили с коллегой на созвоне, а потом поняли, что оба имели в виду одно и то же?",
+                "Случалось ли вам «залипнуть» в телефоне на длинном совещании, а потом импровизировать, когда к вам внезапно обратились?",
+                "Расскажите историю, когда вы пытались казаться «очень занятым» перед руководителем, но в этот момент произошло что-то нелепое.",
+                "Вспомните самый неловкий «small talk» у кофемашины: когда пауза затянулась настолько, что стало больно всем.",
+                "Вспомните созвон, на котором вы забыли выключить микрофон и вся команда услышала что-то лишнее.",
+                "Отвечали ли вы когда-нибудь на видеосозвоне, будучи в пижаме, лежа в кровати или доедая кусок пиццы (с выключенной камерой)?",
+                "Было ли такое, что вы отправили важное письмо, забыв прикрепить к нему обещанный в тексте файл? Как быстро заметили?",
+                "Какую самую смешную или нелепую опечатку вы допускали в рабочем письме или чате?",
+                "Назовите коллегу, имя которого вы долго не могли запомнить, и как вы его называли в лицо, чтобы не выдать себя."
+            ],
+            if: [
+                "Если бы вам пришлось назначить домашнего кота на вашу должность на один день, какие три задачи вы бы ему делегировали?",
+                "Если бы вы могли узаконить один абсолютно бесполезный, но веселый корпоративный ритуал (например, тихий час), что бы это было?",
+                "Представьте, что завтра ваш отдел переименовывают в соответствии с тем, чем вы на самом деле занимаетесь 80% времени. Как бы он назывался?",
+                "Если бы ваша карьера была пиццей Dodo, какие 3 самых странных или неожиданных ингредиента в ней бы точно присутствовали?",
+                "Если бы вам выдали неограниченный бюджет на обустройство офиса мечты, какую одну безумную вещь вы бы купили в первую очередь?",
+                "Представьте, что при вашем появлении в офисе или на созвоне играет персональный саундтрек. Какая песня это была бы?",
+                "Если бы вы могли обменяться должностями с любым коллегой из этого чата на неделю, кого бы вы выбрали и почему?",
+                "Если бы за каждое использование корпоративного сленга («асап», «синергия») вам платили по 100 рублей, на что бы вы потратили премию?",
+                "Представьте, что искусственный интеллект научился писать ответы в чатах за вас. Какую фразу он использовал бы чаще всего?",
+                "Если бы вы могли отменить навсегда один тип рабочих задач, что бы это было?"
+            ],
+            work: [
+                "Какой ваш личный рекорд по имитации бурной деятельности на рабочем месте с максимально умным и занятым лицом?",
+                "Приходилось ли вам имитировать проблемы со связью на созвоне, просто чтобы вас не заставили отвечать на сложный вопрос?",
+                "Назовите самую странную или смешную причину (отмазку), которую вы придумывали для руководителя, чтобы пропустить созвон или взять отгул.",
+                "Вспомните свою самую странную или нелепую подработку из прошлого (до Додо). Какой главный урок вы из нее вынесли?",
+                "Если бы за прокрастинацию на работе давали премии, на что бы вы потратили свою первую выплату?",
+                "Назовите коллегу, чью рабочую сверхспособность (например, скорость, железное спокойствие) вы хотели бы украсть.",
+                "Сколько кружек кофе (или чая) вы выпиваете за рабочий день, и какая из них самая важная?",
+                "Какая вкладка в браузере открыта у вас прямо сейчас, но абсолютно не связана с работой?",
+                "Вспомните задачу, которую вы откладывали «на завтра» дольше всего в своей жизни.",
+                "Если бы ваш рабочий день был фильмом, то к какому жанру он относился бы (комедия, триллер, драма)?"
+            ],
+            dilemma: [
+                "Что ты выберешь: всегда приходить на все рабочие встречи на 10 минут раньше или ровно на 10 минут позже?",
+                "Год работать вообще без созвонов (только переписка) или год без текстовых чатов (только звонки по любому поводу)?",
+                "Работать на старом медленном ноутбуке, но в роскошном массажном кресле, или на суперкомпьютере, но сидя на жесткой деревянной табуретке?",
+                "Полувать зарплату раз в неделю, но строго мелкими монетами в мешке, или один раз в год, но всей суммой сразу на карту?",
+                "Чтобы на созвонах у тебя принудительно стоял неснимаемый фильтр с ушками котика или чтобы твой голос всегда звучал как у робота?",
+                "Работать из красивого хай-тек офиса, но без кофемашины, или из дома, но рабочий интернет включается строго с 6 утра до 2 часов дня?",
+                "Навсегда отказаться от использования любых эмодзи в рабочих чатах или писать абсолютно ВСЕ сообщения капслоком?",
+                "Быть единственным в отделе, кто умеет решать критическую проблему (и тебе звонят ночью), или вообще ничего не уметь и просить о помощи?",
+                "Слушать один и тот же музыкальный трек на повторе весь рабочий день или работать в абсолютной звенящей тишине?",
+                "Чтобы твой рабочий день начинался в 5 утра и заканчивался в час дня, или начинался в 4 часа дня и заканчивался в полночь?"
+            ],
+            secret: [
+                "Назовите одну вещь или профессиональный навык, которым вы искренне восхищаетесь в коллеге, сидящем слева от вас.",
+                "Каким скрытым талантом или хобби вы обладаете, о котором почти никто в этой команде даже не догадывается?",
+                "Кто в нашей команде, по вашему мнению, лучше всего справился бы с ролью секретного агента под прикрытием и почему?",
+                "Если бы о нашей команде снимали сериал, то кто из нас был бы главным генератором шуток, а кто — спокойным голосом разума?",
+                "Кому из присутствующих коллег вы бы без лишних вопросов доверили выбрать для вас квартиру, машину или домашнее животное?",
+                "Какое кодовое слово, локальный мем или общую шутку нашей команды вы любите и вспоминаете чаще всего?",
+                "Если бы вы могли подарить любому коллеге из этой игры абсолютно любую суперсилу, кому и какую бы вы вручили?",
+                "Кто в нашей команде быстрее всех отвечает на сообщения в чатах, а от кого ответа приходится ждать как особого знака свыше?",
+                "Какую самую полезную профессиональную фишку, фразу или лайфхак вы тайно или открыто переняли у кого-то из коллег?",
+                "Если бы мы все вместе открывали свой собственный стартап, какую ключевую роль вы бы отдали коллеге, сидящему справа?"
+            ],
+            future: [
+                "Кем ты видишь себя в компании через 5 лет, если искусственный интеллект полностью заменит твою текущую рутину?",
+                "Если бы мы открыли филиал Додо на Марсе, кого из команды ты бы отправил туда первым управлять процессами?",
+                "Какая технология из фантастических фильмов сильнее всего облегчила бы твою рабочую жизнь прямо сейчас?",
+                "Если бы ты мог заглянуть в рабочий чат нашей команды через 10 лет, какое сообщение там было бы закреплено?",
+                "Какой безумный тренд захватит наш офис в следующем году (например, совещания в VR-шлемах или стоя на гвоздях)?",
+                "Если бы ты мог отправить письмо самому себе в первый день работы в этой компании, какой главный совет ты бы себе дал?",
+                "Представь, что через 20 лет про нашу команду снимут фильм. Какой известный актер или актриса сыграет тебя?",
+                "Какую задачу из тех, что ты делаешь сегодня на работе, твои внуки назовут «древней и забавной дикостью»?",
+                "Если бы ты мог прямо сейчас узнать точную дату своего следующего идеального отпуска или крупного повышения, что бы ты выбрал?",
+                "Какое грандиозное и крутое изменение ждет твой отдел в ближайшие полгода, если бы всё зависело только от твоих мечтаний?"
+            ]
+        };
+
+        // Клонируем пулы для контроля уникальности вопросов
+        let questionPools = {
+            shame: [...dodoDatabase.shame],
+            if: [...dodoDatabase.if],
+            work: [...dodoDatabase.work],
+            dilemma: [...dodoDatabase.dilemma],
+            secret: [...dodoDatabase.secret],
+            future: [...dodoDatabase.future]
+        };
+
+        let players = [
+            { name: "Анна", passes: 0 },
+            { name: "Михаил", passes: 0 },
+            { name: "Дмитрий", passes: 0 },
+            { name: "Елена", passes: 0 },
+            { name: "Ольга", passes: 0 }
+        ];
+        let currentPlayerIndex = 0;
+
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const spinBtn = document.getElementById('spinBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const vetoBtn = document.getElementById('vetoBtn');
+        const questionText = document.getElementById('questionText');
+        const categoryLabel = document.getElementById('categoryLabel');
+        const turnIndicator = document.getElementById('turnIndicator');
+        const soundToggle = document.getElementById('soundToggle');
+        const questionCardWrapper = document.getElementById('questionCardWrapper');
+
+        // 6 уникальных секторов БЕЗ повторений на колесе
+        const pizzaSlices = [
+            { label: "Испанский стыд", color: "#FF6900", textColor: "#FFFFFF", type: "shame" },
+            { label: "Если бы да кабы", color: "#FFA500", textColor: "#2C1D1D", type: "if" },
+            { label: "Герой труда", color: "#2C1D1D", textColor: "#FFFDF9", type: "work" },
+            { label: "Жестокий выбор", color: "#C42828", textColor: "#FFFFFF", type: "dilemma" },
+            { label: "Тайный соус", color: "#4CAF50", textColor: "#FFFFFF", type: "secret" },
+            { label: "Машина времени", color: "#673AB7", textColor: "#FFFFFF", type: "future" }
+        ];
+
+        const sliceCount = pizzaSlices.length;
+        const arcSize = (2 * Math.PI) / sliceCount;
+
+        let currentAngle = 0; 
+        let isSpinning = false;
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            if (isMuted) {
+                soundToggle.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                soundToggle.style.color = '#A69F96';
+            } else {
+                soundToggle.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                soundToggle.style.color = '#6E5E5C';
+                initAudio();
+                playButtonSound();
+            }
+        }
+
+        function createOscillator(freq, type, duration, gainValue, delay = 0) {
+            if (isMuted) return;
+            initAudio();
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime + delay;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(gainValue, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+            osc.start(now);
+            osc.stop(now + duration);
+        }
+
+        function playTickSound() { createOscillator(550, 'triangle', 0.05, 0.08); }
+        function playWinSound() { [261.63, 329.63, 392.00, 523.25].forEach((f, i) => createOscillator(f, 'sine', 0.4, 0.08, i * 0.09)); }
+        function playButtonSound() { createOscillator(350, 'sine', 0.15, 0.06); }
+        function playFailSound() { [220.00, 164.81].forEach((f, i) => createOscillator(f, 'sawtooth', 0.3, 0.06, i * 0.15)); }
+        function playSingSound() { [261.63, 329.63, 392.00, 523.25, 392.00, 523.25, 659.25].forEach((f, i) => createOscillator(f, 'sine', 0.5, 0.07, i * 0.13)); }
+        function playFinishSound() { const tempo=0.14; [261.63, 329.63, 392.00, 523.25, 392.00, 523.25, 659.25, 783.99].forEach((f, i) => createOscillator(f, 'sine', 0.45, 0.08, i * tempo)); }
+
+        // Отрисовка колеса на 6 секторов (много места для надписей)
+        function drawPizzaWheel() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const outerRadius = cx - 15;
+
+            ctx.save();
+            ctx.beginPath(); ctx.fillStyle = "#E49A4C"; ctx.arc(cx, cy, outerRadius + 8, 0, 2 * Math.PI); ctx.fill();
+            ctx.beginPath(); ctx.fillStyle = "#F5B05E"; ctx.arc(cx, cy, outerRadius + 2, 0, 2 * Math.PI); ctx.fill();
+            ctx.restore();
+
+            for (let i = 0; i < sliceCount; i++) {
+                const startAngle = i * arcSize;
+                const endAngle = startAngle + arcSize;
+
+                ctx.beginPath();
+                ctx.fillStyle = pizzaSlices[i].color;
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, outerRadius - 8, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fill();
+
+                // Колбаски Пепперони на сочных секторах
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(startAngle + arcSize / 2);
+                ctx.beginPath(); ctx.fillStyle = "#C42828"; ctx.arc(95, -20, 15, 0, 2 * Math.PI); ctx.fill();
+                ctx.beginPath(); ctx.fillStyle = "#A31D1D"; ctx.arc(95, -20, 9, 0, 2 * Math.PI); ctx.fill();
+                ctx.beginPath(); ctx.fillStyle = "#C42828"; ctx.arc(135, 10, 11, 0, 2 * Math.PI); ctx.fill();
+                ctx.fillStyle = "#FFF2AA"; ctx.beginPath(); ctx.arc(60, 15, 4, 0, 2 * Math.PI); ctx.fill();
+                ctx.restore();
+
+                // Текст надписей категорий (теперь крупнее, так как сектор стал больше)
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate(startAngle + arcSize / 2);
+                ctx.fillStyle = pizzaSlices[i].textColor;
+                ctx.font = "bold 13px 'Montserrat', sans-serif";
+                ctx.textAlign = "right";
+                ctx.textBaseline = "middle";
+                ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 3;
+                ctx.fillText(pizzaSlices[i].label.toUpperCase(), outerRadius - 35, 0);
+                ctx.restore();
+            }
+
+            ctx.save();
+            ctx.beginPath(); ctx.fillStyle = "#2C1D1D"; ctx.arc(cx, cy, 30, 0, 2 * Math.PI); ctx.fill();
+            ctx.beginPath(); ctx.fillStyle = "#FF6900"; ctx.arc(cx, cy, 15, 0, 2 * Math.PI); ctx.fill();
+            ctx.beginPath(); ctx.fillStyle = "rgba(255,255,255,0.2)"; ctx.arc(cx - 5, cy - 5, 5, 0, 2 * Math.PI); ctx.fill();
+            ctx.restore();
+        }
+
+        function renderPlayers() {
+            const list = document.getElementById('playersList');
+            list.innerHTML = '';
+            players.forEach((player, idx) => {
+                const li = document.createElement('li');
+                li.className = `player-item ${idx === currentPlayerIndex ? 'active-turn' : ''}`;
+                
+                let passDots = '';
+                for (let p = 0; p < 3; p++) {
+                    passDots += `<span style="color: ${p < player.passes ? '#C42828' : '#E6DFD5'}; margin-left: 3px; font-size: 13px;">${p < player.passes ? '❌' : '⚫'}</span>`;
+                }
+
+                li.innerHTML = `
+                    <span class="player-name">
+                        <span>${player.name}</span>
+                        <span style="display: inline-flex; margin-left: 8px; align-items: center;">${passDots}</span>
+                    </span>
+                    <button class="remove-player-btn" onclick="removePlayer(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+                `;
+                list.appendChild(li);
+            });
+            updateTurnText();
+        }
+
+        function updateTurnText() {
+            if (players.length > 0) {
+                turnIndicator.innerText = `Крутит: ${players[currentPlayerIndex].name}`;
+                spinBtn.disabled = false;
+            } else {
+                turnIndicator.innerText = "Добавьте команду!";
+                spinBtn.disabled = true;
+            }
+        }
+
+        function addNewPlayer() {
+            const input = document.getElementById('playerNameInput');
+            const name = input.value.trim();
+            if (name && players.length < 15) {
+                players.push({ name: name, passes: 0 });
+                input.value = '';
+                renderPlayers();
+                playButtonSound();
+            }
+        }
+
+        function handleKeyPress(e) { if (e.key === 'Enter') addNewPlayer(); }
+        function removePlayer(idx) {
+            players.splice(idx, 1);
+            if (currentPlayerIndex >= players.length && players.length > 0) currentPlayerIndex = 0;
+            renderPlayers();
+            playButtonSound();
+        }
+
+        // Анимация вращения пересчитана строго под 6 секторов (60 градусов на сектор)
+        function spinDodoWheel() {
+            if (isSpinning || players.length === 0) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            playButtonSound();
+            
+            questionCardWrapper.style.animation = 'none';
+
+            const winningIndex = Math.floor(Math.random() * sliceCount);
+            const sliceDegrees = 360 / sliceCount; // 60 градусов
+            const sliceCenterOffset = (winningIndex * sliceDegrees) + (sliceDegrees / 2);
+            
+            let targetAngleDegrees = 270 - sliceCenterOffset;
+            while (targetAngleDegrees < 0) targetAngleDegrees += 360;
+
+            const currentMod = currentAngle % 360;
+            let angleDiff = targetAngleDegrees - currentMod;
+            if (angleDiff <= 0) angleDiff += 360;
+
+            const totalRotation = (360 * 6) + angleDiff;
+            const startAngle = currentAngle;
+            let startTime = null;
+            const duration = 5000;
+            let lastTickAngle = currentAngle;
+
+            function easeOutQuint(t) { return 1 - Math.pow(1 - t, 5); }
+
+            function animateWheel(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                const easedProgress = easeOutQuint(progress);
+                currentAngle = startAngle + (totalRotation * easedProgress);
+                
+                canvas.style.transform = `rotate(${currentAngle}deg)`;
+
+                // Эффект трещотки каждые 30 градусов для сочного звука
+                if (Math.floor(currentAngle / 30) !== Math.floor(lastTickAngle / 30)) {
+                    playTickSound();
+                    lastTickAngle = currentAngle;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateWheel);
+                } else {
+                    isSpinning = false;
+                    playWinSound();
+                    announceDodoQuestion(pizzaSlices[winningIndex]);
+                }
+            }
+            requestAnimationFrame(animateWheel);
+        }
+
+        function announceDodoQuestion(slice) {
+            if (questionPools[slice.type].length === 0) {
+                questionPools[slice.type] = [...dodoDatabase[slice.type]];
+            }
+
+            const pickedIndex = Math.floor(Math.random() * questionPools[slice.type].length);
+            const outputQuestion = questionPools[slice.type].splice(pickedIndex, 1)[0];
+
+            categoryLabel.innerText = slice.label;
+            categoryLabel.style.display = "inline-block";
+            categoryLabel.className = `category-tag tag-${slice.type}`;
+            
+            const activePlayerName = players[currentPlayerIndex].name;
+            questionText.innerHTML = `
+                <div class="player-highlight">👑 ${activePlayerName} 👑</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: #2C1D1D; max-width: 95%; line-height: 1.5;">
+                    ${outputQuestion}
+                </div>
+            `;
+            
+            questionCardWrapper.style.animation = 'fadeIn 0.5s ease-out forwards';
+
+            spinBtn.style.display = "none";
+            vetoBtn.style.display = "inline-block";
+            nextBtn.style.display = "inline-block";
+        }
+
+        function useVeto() {
+            if (players.length === 0) return;
+            playFailSound();
+            
+            let player = players[currentPlayerIndex];
+            player.passes++;
+            renderPlayers();
+
+            if (player.passes >= 3) {
+                document.getElementById('singPlayerName').innerText = player.name;
+                document.getElementById('singModal').classList.add('active');
+                playSingSound();
+                player.passes = 0;
+            } else {
+                questionText.innerHTML = `
+                    <div class="player-highlight" style="color: #C42828;">🤐 ВЕТО ИСПОЛЬЗОВАНО! 🤐</div>
+                    <div style="font-size: 1.2rem; font-weight: 700; color: #2C1D1D; max-width: 90%; line-height: 1.5; background: #FFF0F0; padding: 15px; border-radius: 12px; border: 2px solid #C42828;">
+                        Пропуск записан на счет <strong>${player.name}</strong>.<br>
+                        Счетчик пропусков: <strong style="color: #C42828;">${player.passes} из 3</strong>.
+                    </div>
+                `;
+            }
+            vetoBtn.style.display = "none";
+        }
+
+        function closeSingModal() {
+            document.getElementById('singModal').classList.remove('active');
+            playButtonSound();
+            renderPlayers();
+            nextRound();
+        }
+
+        function nextRound() {
+            playButtonSound();
+            if (players.length > 0) currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            renderPlayers();
+
+            categoryLabel.style.display = "none";
+            questionText.innerText = "Нажмите «Крутить пиццу», чтобы выбрать случайную категорию и вопрос!";
+
+            nextBtn.style.display = "none";
+            vetoBtn.style.display = "none";
+            spinBtn.style.display = "inline-block";
+            spinBtn.disabled = false;
+        }
+
+        function finishGame() {
+            const container = document.getElementById('finishPlayersContainer');
+            container.innerHTML = '';
+            
+            if (players.length === 0) {
+                container.innerHTML = '<span style="font-style: italic; color: #A69F96;">Игроки не были добавлены</span>';
+            } else {
+                players.forEach(p => {
+                    const badge = document.createElement('span');
+                    badge.className = 'finish-player-badge';
+                    badge.innerHTML = `🍕 <strong>${p.name}</strong>`;
+                    container.appendChild(badge);
+                });
+            }
+            playFinishSound();
+            document.getElementById('finishModal').classList.add('active');
+        }
+
+        function closeFinishModal() {
+            playButtonSound();
+            document.getElementById('finishModal').classList.remove('active');
+        }
+
+        window.onload = function() {
+            drawPizzaWheel();
+            renderPlayers();
+        }
+    </script>
+</body>
+</html>
